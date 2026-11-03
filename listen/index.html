@@ -13,11 +13,15 @@ audio{width:100%}
 </style></head><body>
 <div class="ttl">2027 捷奧 · 有聲導覽</div>
 <h1>查理大橋 · 聲音試聽</h1>
-<p class="s">同一份稿，三種聲音，各約 4 分鐘。聽聽看哪個最像在聽人講故事。</p>
+<p class="s">同一份稿，七種聲音，各約 3½–4½ 分鐘。聽聽看哪個最像在聽人講故事。</p>
 <div class="sp" id="sp"></div>
 <div class="v"><b>A　台灣女聲</b><small>溫和、清楚</small><audio controls preload="none" src="charles-a.mp3"></audio></div>
 <div class="v"><b>B　台灣男聲</b><small>穩、像旁白</small><audio controls preload="none" src="charles-b.mp3"></audio></div>
 <div class="v"><b>C　說故事男聲</b><small>起伏比較多，大陸腔</small><audio controls preload="none" src="charles-c.mp3"></audio></div>
+<div class="v"><b>D　Gemini 女聲</b><small>Google Gemini 語音，照「說故事導遊」的口吻念</small><audio controls preload="none" src="charles-d.mp3"></audio></div>
+<div class="v"><b>E　Gemini 男聲</b><small>Google Gemini 語音，同上，男聲</small><audio controls preload="none" src="charles-e.mp3"></audio></div>
+<div class="v"><b>F　ElevenLabs 女聲</b><small>台灣腔，輕快明亮</small><audio controls preload="none" src="charles-f.mp3"></audio></div>
+<div class="v"><b>G　MiniMax 女聲</b><small>標示台灣腔，甜、偏輕；有些字口音較重</small><audio controls preload="none" src="charles-g.mp3"></audio></div>
 <script>
 const S=[1,1.25,1.5,2];let r=+localStorage.getItem("rate")||1;const A=[...document.querySelectorAll("audio")];
 function draw(){document.getElementById("sp").innerHTML=S.map(x=>`<button class="${x==r?"on":""}" data-r="${x}">${x}×</button>`).join("");A.forEach(a=>{a.playbackRate=r;a.defaultPlaybackRate=r})}
