@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cut">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="旅行記帳">
+<meta name="theme-color" content="#f6f1e7">
+<title>旅行記帳 · 2027 捷奧</title>
+<style>
+:root{--bg:#f6f1e7;--card:#fffdf8;--ink:#2a241b;--mute:#8a7e6a;--line:#e7dfcf;--gold:#6e5320;--acc:#9a7432;--red:#a3402f;
+--ui:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC",sans-serif}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--ui)}
+body{padding:env(safe-area-inset-top) 16px calc(24px + env(safe-area-inset-bottom))}
+header{padding:18px 4px 6px}
+.ttl{font-size:13px;letter-spacing:.12em;color:var(--mute)}
+.sum{display:flex;gap:10px;margin-top:10px}
+.sum div{flex:1;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px}
+.sum small{display:block;font-size:12px;color:var(--mute)}
+.sum b{display:block;font-size:24px;font-weight:600;margin-top:2px;font-variant-numeric:tabular-nums}
+.cur{display:flex;background:#ece4d3;border-radius:12px;padding:3px;margin:14px 0 12px}
+.cur button{flex:1;border:0;background:transparent;font:500 15px var(--ui);color:var(--mute);padding:9px 0;border-radius:9px}
+.cur button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.cats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.cats button{border:1px solid var(--line);background:var(--card);border-radius:18px;padding:16px 0 12px;font:500 15px var(--ui);color:var(--ink)}
+.cats button span{display:block;font-size:28px;margin-bottom:4px}
+.cats button:active{transform:scale(.97);background:#f3ecdc}
+h2{font-size:13px;color:var(--mute);font-weight:500;margin:22px 4px 8px;display:flex;justify-content:space-between}
+.list{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.it{display:flex;align-items:center;gap:12px;padding:12px 14px;border-top:1px solid var(--line)}
+.it:first-child{border-top:0}
+.it .e{font-size:22px;width:28px;text-align:center}
+.it .m{flex:1;min-width:0}
+.it .m div{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.it .m small{font-size:12px;color:var(--mute)}
+.it .a{text-align:right;font-variant-numeric:tabular-nums}
+.it .a div{font-size:15px;font-weight:600}
+.it .a small{font-size:12px;color:var(--mute)}
+.empty{padding:22px;text-align:center;color:var(--mute);font-size:14px}
+.tools{display:flex;gap:10px;margin-top:22px}
+.tools button{flex:1;border:1px solid var(--line);background:transparent;border-radius:12px;padding:11px 0;font:14px var(--ui);color:var(--gold)}
+.note{font-size:12px;color:var(--mute);margin:14px 4px 0;line-height:1.6}
+/* sheet */
+.mask{position:fixed;inset:0;background:rgba(30,24,15,.35);opacity:0;pointer-events:none;transition:opacity .2s}
+.mask.on{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-radius:22px 22px 0 0;padding:18px 18px calc(18px + env(safe-area-inset-bottom));transform:translateY(105%);visibility:hidden;transition:transform .22s ease-out,visibility 0s .22s;box-shadow:0 -6px 30px rgba(0,0,0,.12)}
+.sheet.on{transform:none;visibility:visible;transition:transform .22s ease-out}
+.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.sh b{font-size:17px}
+.sh button{border:0;background:none;font:15px var(--ui);color:var(--mute);padding:4px}
+.amt{display:flex;align-items:baseline;gap:8px;border-bottom:2px solid var(--acc);padding-bottom:6px}
+.amt span{font-size:20px;color:var(--mute)}
+.amt input{flex:1;min-width:0;border:0;outline:0;background:transparent;font:600 40px var(--ui);color:var(--ink);font-variant-numeric:tabular-nums}
+.twd{font-size:13px;color:var(--mute);margin:6px 2px 14px;min-height:18px}
+.sheet .noteIn{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px;font:16px var(--ui);background:#fff;outline:0}
+.row{display:flex;gap:10px;margin-top:14px}
+.row button{flex:1;border:0;border-radius:14px;padding:15px 0;font:600 17px var(--ui)}
+.save{background:var(--gold);color:#fff}
+.save:disabled{opacity:.4}
+.del{background:#f4e3df;color:var(--red);flex:.45!important}
+.toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top));transform:translate(-50%,-80px);background:var(--ink);color:#fff;padding:10px 18px;border-radius:20px;font-size:14px;transition:transform .25s}
+.toast.on{transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+<header>
+  <div class="ttl">2027 捷奧 · 旅行記帳</div>
+  <div class="sum">
+    <div><small>今天</small><b id="sToday">NT$0</b></div>
+    <div><small>全部</small><b id="sAll">NT$0</b></div>
+  </div>
+</header>
+
+<div class="cur" id="cur"></div>
+<div class="cats" id="cats"></div>
+
+<h2><span>紀錄</span><span id="cnt"></span></h2>
+<div id="days"></div>
+
+<div class="tools">
+  <button id="bCsv">匯出 CSV</button>
+  <button id="bRate">匯率</button>
+</div>
+<p class="note">先存在這支手機裡，沒網路也能記。之後會加同步，兩人共用一本帳。<br>點一筆可以修改或刪除。</p>
+
+<div class="mask" id="mask"></div>
+<div class="sheet" id="sheet">
+  <div class="sh"><b id="shT"></b><button id="shX">取消</button></div>
+  <div class="amt"><span id="shC"></span><input id="inA" type="text" inputmode="decimal" placeholder="0" autocomplete="off"></div>
+  <div class="twd" id="shTwd"></div>
+  <input class="noteIn" id="inN" type="text" placeholder="附註（可不填）" maxlength="40" autocomplete="off" enterkeyhint="done">
+  <div class="row"><button class="del" id="bDel">刪除</button><button class="save" id="bSave" disabled>存</button></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const CATS=[["food","吃喝","🍽️"],["move","交通","🚆"],["tix","門票","🎟️"],["shop","購物","🛍️"],["stay","住宿","🏨"],["etc","其他","✳️"]];
+const CURS=[["EUR","€"],["CZK","Kč"],["TWD","NT$"]];
+const KEY="wallet2027", RKEY="wallet2027rates", CKEY="wallet2027cur";
+const DEF_RATES={EUR:36.38,CZK:1.51,TWD:1};
+let items=load(KEY,[]), rates=Object.assign({},DEF_RATES,load(RKEY,{})), cur=localStorage.getItem(CKEY)||"EUR", editing=null, curCat=null;
+function load(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}}
+function save(){localStorage.setItem(KEY,JSON.stringify(items))}
+const $=id=>document.getElementById(id);
+const sym=c=>CURS.find(x=>x[0]==c)[1];
+const cat=k=>CATS.find(x=>x[0]==k)||CATS[5];
+const twd=i=>Math.round(i.amt*(i.rate??rates[i.cur]));
+const fmt=n=>"NT$"+n.toLocaleString("en-US");
+const fmtO=(a,c)=>c=="TWD"?fmt(a):sym(c)+" "+(+a).toLocaleString("en-US",{maximumFractionDigits:2});
+const dkey=t=>{const d=new Date(t);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")};
+const WK="日一二三四五六";
+
+function render(){
+  $("cur").innerHTML=CURS.map(([c,s])=>`<button data-c="${c}" class="${c==cur?"on":""}">${s} ${c}</button>`).join("");
+  $("cats").innerHTML=CATS.map(([k,n,e])=>`<button data-k="${k}"><span>${e}</span>${n}</button>`).join("");
+  const today=dkey(Date.now());
+  $("sToday").textContent=fmt(items.filter(i=>dkey(i.t)==today).reduce((s,i)=>s+twd(i),0));
+  $("sAll").textContent=fmt(items.reduce((s,i)=>s+twd(i),0));
+  $("cnt").textContent=items.length?items.length+" 筆":"";
+  const g={};[...items].sort((a,b)=>b.t-a.t).forEach(i=>(g[dkey(i.t)]??=[]).push(i));
+  const ks=Object.keys(g);
+  $("days").innerHTML=ks.length?ks.map(k=>{const d=new Date(k+"T00:00");const tot=g[k].reduce((s,i)=>s+twd(i),0);
+    return `<h2><span>${d.getMonth()+1}/${d.getDate()}（${WK[d.getDay()]}）</span><span>${fmt(tot)}</span></h2><div class="list">`+
+    g[k].map(i=>{const c=cat(i.cat);const tm=new Date(i.t);return `<div class="it" data-id="${i.id}"><div class="e">${c[2]}</div><div class="m"><div>${esc(i.note||c[1])}</div><small>${i.note?c[1]+" · ":""}${String(tm.getHours()).padStart(2,"0")}:${String(tm.getMinutes()).padStart(2,"0")}</small></div><div class="a"><div>${fmtO(i.amt,i.cur)}</div>${i.cur!="TWD"?`<small>${fmt(twd(i))}</small>`:""}</div></div>`}).join("")+"</div>"}).join("")
+    :`<div class="list"><div class="empty">還沒有紀錄，點上面的類別開始記</div></div>`;
+}
+function esc(s){return s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+
+function openSheet(catKey,item){
+  editing=item||null; curCat=item?item.cat:catKey;
+  const c=cat(curCat), cc=item?item.cur:cur;
+  $("shT").textContent=c[2]+" "+c[1]+(item?"（修改）":"");
+  $("shC").textContent=sym(cc); $("shC").dataset.c=cc;
+  $("inA").value=item?item.amt:""; $("inN").value=item?.note||"";
+  $("bDel").style.display=item?"":"none";
+  upd(); $("mask").classList.add("on"); $("sheet").classList.add("on");
+  $("inA").focus();
+}
+function closeSheet(){$("mask").classList.remove("on");$("sheet").classList.remove("on");document.activeElement.blur();editing=null}
+function parseAmt(){const v=$("inA").value.replace(/,/g,".").replace(/[^\d.]/g,"");const n=parseFloat(v);return isFinite(n)&&n>0?Math.round(n*100)/100:null}
+function upd(){const a=parseAmt(), c=$("shC").dataset.c;$("bSave").disabled=!a;$("shTwd").textContent=a&&c!="TWD"?"≈ "+fmt(Math.round(a*rates[c])):""}
+function doSave(){
+  const a=parseAmt(); if(!a) return;
+  const note=$("inN").value.trim(), was=editing;
+  if(editing){Object.assign(editing,{amt:a,note})}
+  else{const c=$("shC").dataset.c;items.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),t:Date.now(),cat:curCat,amt:a,cur:c,rate:rates[c],note})}
+  save(); closeSheet(); render(); toast(was?"已更新":"已記下");
+}
+function toast(m){const t=$("toast");t.textContent=m;t.classList.add("on");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("on"),1400)}
+
+$("cur").onclick=e=>{const b=e.target.closest("button");if(!b)return;cur=b.dataset.c;localStorage.setItem(CKEY,cur);render()};
+$("cats").onclick=e=>{const b=e.target.closest("button");if(b)openSheet(b.dataset.k)};
+$("days").onclick=e=>{const r=e.target.closest(".it");if(r)openSheet(null,items.find(i=>i.id==r.dataset.id))};
+$("mask").onclick=closeSheet; $("shX").onclick=closeSheet;
+$("inA").oninput=upd;
+$("inA").onkeydown=e=>{if(e.key=="Enter"){e.preventDefault();$("inN").focus()}};
+$("inN").onkeydown=e=>{if(e.key=="Enter"){e.preventDefault();doSave()}};
+$("bSave").onclick=doSave;
+$("bDel").onclick=()=>{if(editing&&confirm("刪除這筆？")){items=items.filter(i=>i!==editing);save();closeSheet();render();toast("已刪除")}};
+$("bCsv").onclick=async()=>{
+  const rows=[["日期","時間","類別","附註","金額","幣別","匯率","台幣"]].concat([...items].sort((a,b)=>a.t-b.t).map(i=>{const d=new Date(i.t);return[dkey(i.t),d.toTimeString().slice(0,5),cat(i.cat)[1],i.note||"",i.amt,i.cur,i.rate??rates[i.cur],twd(i)]}));
+  const csv="﻿"+rows.map(r=>r.map(x=>`"${String(x).replace(/"/g,'""')}"`).join(",")).join("\n");
+  const f=new File([csv],"旅行記帳.csv",{type:"text/csv"});
+  if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f]});return}catch(e){if(e.name=="AbortError")return}}
+  const a=document.createElement("a");a.href=URL.createObjectURL(f);a.download=f.name;a.click();
+};
+$("bRate").onclick=()=>{
+  for(const c of ["EUR","CZK"]){const v=prompt(`1 ${c} = 多少台幣？`,rates[c]);if(v===null)return;const n=parseFloat(v);if(n>0)rates[c]=n}
+  localStorage.setItem(RKEY,JSON.stringify({EUR:rates.EUR,CZK:rates.CZK}));render();toast("匯率已更新（只影響之後新記的）");
+};
+render();
+</script>
+</body>
+</html>
